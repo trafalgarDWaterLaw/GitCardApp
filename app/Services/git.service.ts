@@ -6,25 +6,48 @@ import 'rxjs/add/operator/toPromise'; //add on module of angular
 
 @Injectable()
 export class GITService {
-    public userDetailArr:User[] = new Array<User>();
-    private userDetail:User;
+    public userDetailArr:User[]; 
+    public errorMsg:any;
     private endpointUrl = 'https://api.github.com/users?since=135';
-    private dummy:AllUser;
-    private userMap:AllUser[] = new Array<AllUser>();
+    private userMap:AllUser[];
     constructor(private http:Http){
+       this.userMap = [];
+        this.userDetailArr = [];
     }
     getUserDetail(){ //User details fills up in userDetailArr
         this.getAllUserAPI();
-        this.getAllUserDetail();
+        console.log('*******************************');
+        console.log('Custom user detail array size is');
+        console.log(this.userDetailArr.length);
+        console.log(this.userDetailArr);
+        console.log('*******************************');
         return Promise.resolve(this.userDetailArr);
     }
-    private parseAllUserResponse(arrayOfObject:any){
-        for (var i=0;i<arrayOfObject.length;i++){ 
-            this.dummy = new AllUser(); 
-            this.dummy.id = parseInt(arrayOfObject[i].category);
-            this.dummy.url = arrayOfObject[i].url;
-            this.userMap.push(this.dummy);
+    private  handleError(error: Response | any) {
+        let errMsg: string;
+        if (error instanceof Response) {
+            const body = error.json() || '';
+            const err = body.error || JSON.stringify(body);
+            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
+        } else {
+            errMsg = error.message ? error.message : error.toString();
         }
+        console.log('*******************************');
+        console.log('service Error message');
+        console.error(errMsg);
+        console.log('*******************************');
+        this.errorMsg = errMsg;
+    }
+    private parseAllUserResponse(arrayOfObject:any){
+        for (let i=0;i<arrayOfObject.length;i++){ 
+            let dummy:AllUser = new AllUser(); 
+            dummy.id = parseInt(arrayOfObject[i].id);
+            dummy.url = arrayOfObject[i].url;
+            this.userMap.push(dummy);
+        }
+        console.log('*************User Map After filling******************');
+        console.log(this.userMap);
+        console.log('**********after user Map logged*******');
     }
     
     getAllUserAPI(){
@@ -32,18 +55,34 @@ export class GITService {
                         .subscribe(res => {
                             res = res.json();
                             console.log(res);
-                            this.parseAllUserResponse(res);
+                            console.log('*************Response satus of all users service call *****************');
+                            console.log(res.status);
+                            //if(res.status == 200)
+                           // {
+                                this.parseAllUserResponse(res);
+                                console.log('*************User Map innside API call******************');
+                                console.log(this.userMap);
+                                console.log('**********After API Call Logged*******');
+                                this.getAllUserDetail();
+                                console.log('*************User Detail Arr innside API call******************');
+                                console.log(this.userDetailArr);
+                                console.log('**********After API Call Logged*******');
+                            //}
+                           /* else{
+                                this.handleError(res);
+                            }*/
                         });
     }
 
     private parseUserResponse(Object:any){
-        this.userDetail = new User();
-        this.userDetail.avatarUrl = Object.avatar_url;
-        this.userDetail.followers = parseInt(Object.followers);
-        this.userDetail.htmlUrl = Object.html_url;
-        this.userDetail.id = parseInt(Object.id);
-        this.userDetail.location = Object.location;
-        this.userDetail.name = Object.name;
+        let userDetail:User = new User();
+        userDetail.avatarUrl = Object.avatar_url;
+        userDetail.followers = parseInt(Object.followers);
+        userDetail.htmlUrl = Object.html_url;
+        userDetail.id = parseInt(Object.id);
+        userDetail.location = Object.location;
+        userDetail.name = Object.name;
+        this.userDetailArr.push(userDetail);
     }
 
     getUserDetailAPI(url:string){
@@ -51,14 +90,25 @@ export class GITService {
                         .subscribe(res => {
                             res = res.json();
                             console.log(res);
-                            this.parseUserResponse(res);
+                            console.log('*************Response satus of specific users *****************');
+                            console.log(url);
+                            console.log(res.status);
+                            //if(res.status == 200){
+                                this.parseUserResponse(res);
+                           /* }
+                            else{
+                                this.handleError(res);
+                            }*/
                         });
     }
 
     getAllUserDetail(){
-        for (var i=0;i<this.userMap.length;i++){ 
+        console.log('Line 99 ....********* User Map length in getAllUserDetail()');
+        console.log(this.userMap.length);
+        for (let i=0;i<this.userMap.length;i++){ 
             this.getUserDetailAPI(this.userMap[i].url);
-            this.userDetailArr.push(this.userDetail);
         }
+         console.log('*************UserDetail Arr Just after Filling *****************');
+        console.log(this.userDetailArr);
     }
 }

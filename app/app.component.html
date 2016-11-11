@@ -1,1 +1,10 @@
-<h1>My First Angular App</h1>
+<ul class="users">
+    <li *ngFor="let person of userDetailArr">
+        <a href="{{person.htmlUrl}}">
+            <img src={{person.avatarUrl}}>
+            <h4>{{person.name}}</h4>
+            <h5>Location: </h5><p>{{person.location}}</p>
+            <h5>Followers: </h5><p>{{person.followers}}</p>
+        </a>
+    </li>
+</ul>

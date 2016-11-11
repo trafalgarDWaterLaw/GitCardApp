@@ -5,5 +5,5 @@ export class User {
     followers:number;
     location:string;
     htmlUrl: string;
-}
+};
 

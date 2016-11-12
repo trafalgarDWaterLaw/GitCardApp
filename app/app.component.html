@@ -1,7 +1,14 @@
-<ul class="users">
+<ul class="nav nav-pills">
+  <li role="presentation" >Sort by:</li>
+  <button class="btn btn-default" type="submit" (click)="sortByName()">Name</button>
+  <button class="btn btn-default" type="submit" (click)="sortByLocation()">Location</button>
+  <button class="btn btn-default" type="submit" (click)="sortByFollowers()">Followers</button>
+</ul>
+<ul class="list-inline">
     <li *ngFor="let person of userDetailArr">
         <a href="{{person.htmlUrl}}">
-            <img src={{person.avatarUrl}}>
+            <img src={{person.avatarUrl}} class="img-rounded"/>
+            <button type="button" class="close" aria-label="Close" onclick='return false;' (click)="removeThisElement(person)"><span aria-hidden="true" position="absolute" right="50%" top="50%">&times;</span></button>
             <h4>{{person.name}}</h4>
             <h5>Location: </h5><p>{{person.location}}</p>
             <h5>Followers: </h5><p>{{person.followers}}</p>

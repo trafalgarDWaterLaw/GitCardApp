@@ -18,11 +18,7 @@ export class GITService {
     }
     getUserDetail(){ //User details fills up in userDetailArr
         this.getAllUserAPI();
-        console.log('*******************************');
-        console.log('Custom user detail array size is');
         console.log(this.userDetailArr.length);
-        console.log(this.userDetailArr);
-        console.log('*******************************');
         return Promise.resolve(this.userDetailArr);
     }
     private  handleError(error: Response | any) {
@@ -47,9 +43,7 @@ export class GITService {
             dummy.url = arrayOfObject[i].url;
             this.userMap.push(dummy);
         }
-        console.log('*************User Map After filling******************');
         console.log(this.userMap);
-        console.log('**********after user Map logged*******');
     }
     
     getAllUserAPI(){
@@ -57,22 +51,11 @@ export class GITService {
                         .subscribe(res => {
                             res = res.json();
                             console.log(res);
-                            console.log('*************Response satus of all users service call *****************');
                             console.log(res.status);
-                            //if(res.status == 200)
-                           // {
-                                this.parseAllUserResponse(res);
-                                console.log('*************User Map innside API call******************');
-                                console.log(this.userMap);
-                                console.log('**********After API Call Logged*******');
-                                this.getAllUserDetail();
-                                console.log('*************User Detail Arr innside API call******************');
-                                console.log(this.userDetailArr);
-                                console.log('**********After API Call Logged*******');
-                            //}
-                           /* else{
-                                this.handleError(res);
-                            }*/
+                            this.parseAllUserResponse(res);
+                            console.log(this.userMap);
+                            this.getAllUserDetail();
+                            console.log(this.userDetailArr);
                         });
     }
 
@@ -92,25 +75,16 @@ export class GITService {
                         .subscribe(res => {
                             res = res.json();
                             console.log(res);
-                            console.log('*************Response satus of specific users *****************');
                             console.log(url);
                             console.log(res.status);
-                            //if(res.status == 200){
-                                this.parseUserResponse(res);
-                           /* }
-                            else{
-                                this.handleError(res);
-                            }*/
+                            this.parseUserResponse(res);
                         });
     }
 
     getAllUserDetail(){
-        console.log('Line 99 ....********* User Map length in getAllUserDetail()');
-        console.log(this.userMap.length);
         for (let i=0;i<this.userMap.length;i++){ 
             this.getUserDetailAPI(this.userMap[i].url);
         }
-         console.log('*************UserDetail Arr Just after Filling *****************');
         console.log(this.userDetailArr);
     }
      private parseSingleUserResponse(Object:any){
@@ -121,8 +95,7 @@ export class GITService {
         this.singleUserDetail.location = Object.location;
         this.singleUserDetail.name = Object.name;
     }
-
-    getSingleUserDetailAPI(userHtmlUrl:string){
+    private getAPIUrl(userHtmlUrl:string){
         //Getting url logic
         let stringLength = userHtmlUrl.length;
         let lastChar = '/';
@@ -134,25 +107,21 @@ export class GITService {
         let idx = userHtmlUrl.indexOf("com/");
         idx = idx + 4;
         let usernameLen = stringLength -idx;
-         this.urlHtml = "https://api.github.com/users/";
-       this.urlHtml = this.urlHtml + userHtmlUrl.substr(idx, usernameLen);
-       console.log("*********************************user Url is***********************************************************");
-       console.log(userHtmlUrl);
-       console.log(this.urlHtml);
-       console.log("*********************************user Url logged is***********************************************************");
+        this.urlHtml = "https://api.github.com/users/";
+        this.urlHtml = this.urlHtml + userHtmlUrl.substr(idx, usernameLen);
+        //Getting url logic ends
+    }
+    getSingleUserDetailAPI(userHtmlUrl:string){
+        this.getAPIUrl(userHtmlUrl);
+        console.log(userHtmlUrl);
+        console.log(this.urlHtml);
         this.http.get(this.urlHtml)
                         .subscribe(res => {
                             res = res.json();
                             console.log(res);
-                            console.log('*************Response satus of specific users *****************');
                             console.log(this.urlHtml);
                             console.log(res.status);
-                            //if(res.status == 200){
-                                this.parseSingleUserResponse(res);
-                           /* }
-                            else{
-                                this.handleError(res);
-                            }*/
+                            this.parseSingleUserResponse(res);
                         });
                         return Promise.resolve(this.singleUserDetail);
     }

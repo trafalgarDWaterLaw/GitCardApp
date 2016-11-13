@@ -1,7 +1,6 @@
 import { Component,  OnInit} from '@angular/core';
 import {User} from './Models/user.model'; 
 import {GITService} from './Services/git.service';
-//import {AddGITUserService} from './Services/add.git.user.service';
 
 
 @Component({
@@ -10,7 +9,6 @@ import {GITService} from './Services/git.service';
     styleUrls:  ['app/app.component.css']
 })
 export class AppComponent implements OnInit{ 
-    //public userHtmlUrl:string;
     public userDetailArr:User[] = [];
     public serviceError:any;
     constructor(private gitService:GITService /*, private addUserService:AddGITUserService*/){
@@ -18,14 +16,7 @@ export class AppComponent implements OnInit{
     ngOnInit() {
             this.gitService.getUserDetail().then((userDetailArr)=>{
             this.userDetailArr = userDetailArr;
-            console.log('*******************************');
             console.log(this.userDetailArr);
-            console.log('*******************************');
-            /*this.serviceError = this.gitService.errorMsg;
-            if(this.serviceError){
-                console.log('******service Error occured is *****');
-                console.log(this.serviceError);
-            }*/
         });
     }
     sortByFollowers(){
@@ -64,9 +55,11 @@ export class AppComponent implements OnInit{
     addUser(newUserUrl:string){
         console.log("***************************Component logging*******************");
         console.log(newUserUrl);
-        console.log("***************************Component logging*******************");
         this.gitService.getSingleUserDetailAPI(newUserUrl).then((userDetail)=>{
-            this.userDetailArr.push(userDetail);
+            let idx = this.userDetailArr.indexOf(userDetail);
+            if(idx === -1){             //To not add duplicate card
+                this.userDetailArr.push(userDetail);
+            }
         });
     }
 }

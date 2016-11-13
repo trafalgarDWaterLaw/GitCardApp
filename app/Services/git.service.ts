@@ -7,6 +7,8 @@ import 'rxjs/add/operator/toPromise'; //add on module of angular
 @Injectable()
 export class GITService {
     public userDetailArr:User[]; 
+    public singleUserDetail:User = new User();
+    private urlHtml:string ;
     public errorMsg:any;
     private endpointUrl = 'https://api.github.com/users?since=135';
     private userMap:AllUser[];
@@ -110,5 +112,48 @@ export class GITService {
         }
          console.log('*************UserDetail Arr Just after Filling *****************');
         console.log(this.userDetailArr);
+    }
+     private parseSingleUserResponse(Object:any){
+        this.singleUserDetail.avatarUrl = Object.avatar_url;
+        this.singleUserDetail.followers = parseInt(Object.followers);
+        this.singleUserDetail.htmlUrl = Object.html_url;
+        this.singleUserDetail.id = parseInt(Object.id);
+        this.singleUserDetail.location = Object.location;
+        this.singleUserDetail.name = Object.name;
+    }
+
+    getSingleUserDetailAPI(userHtmlUrl:string){
+        //Getting url logic
+        let stringLength = userHtmlUrl.length;
+        let lastChar = '/';
+        while(lastChar === '/'){
+            lastChar = userHtmlUrl.charAt(stringLength - 1);
+            stringLength = stringLength-1;
+        }
+        stringLength = stringLength+1;
+        let idx = userHtmlUrl.indexOf("com/");
+        idx = idx + 4;
+        let usernameLen = stringLength -idx;
+         this.urlHtml = "https://api.github.com/users/";
+       this.urlHtml = this.urlHtml + userHtmlUrl.substr(idx, usernameLen);
+       console.log("*********************************user Url is***********************************************************");
+       console.log(userHtmlUrl);
+       console.log(this.urlHtml);
+       console.log("*********************************user Url logged is***********************************************************");
+        this.http.get(this.urlHtml)
+                        .subscribe(res => {
+                            res = res.json();
+                            console.log(res);
+                            console.log('*************Response satus of specific users *****************');
+                            console.log(this.urlHtml);
+                            console.log(res.status);
+                            //if(res.status == 200){
+                                this.parseSingleUserResponse(res);
+                           /* }
+                            else{
+                                this.handleError(res);
+                            }*/
+                        });
+                        return Promise.resolve(this.singleUserDetail);
     }
 }

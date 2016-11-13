@@ -1,6 +1,7 @@
 import { Component,  OnInit} from '@angular/core';
 import {User} from './Models/user.model'; 
 import {GITService} from './Services/git.service';
+//import {AddGITUserService} from './Services/add.git.user.service';
 
 
 @Component({
@@ -9,9 +10,10 @@ import {GITService} from './Services/git.service';
     styleUrls:  ['app/app.component.css']
 })
 export class AppComponent implements OnInit{ 
+    //public userHtmlUrl:string;
     public userDetailArr:User[] = [];
     public serviceError:any;
-    constructor(private gitService:GITService){
+    constructor(private gitService:GITService /*, private addUserService:AddGITUserService*/){
     }
     ngOnInit() {
             this.gitService.getUserDetail().then((userDetailArr)=>{
@@ -26,7 +28,7 @@ export class AppComponent implements OnInit{
             }*/
         });
     }
-     sortByFollowers(){
+    sortByFollowers(){
              this.userDetailArr.sort((n1,n2) => n2.followers - n1.followers);
     }
     sortByLocation(){
@@ -58,5 +60,13 @@ export class AppComponent implements OnInit{
         if (idx != -1) {
                 return this.userDetailArr.splice(idx, 1); 
             }
+    }
+    addUser(newUserUrl:string){
+        console.log("***************************Component logging*******************");
+        console.log(newUserUrl);
+        console.log("***************************Component logging*******************");
+        this.gitService.getSingleUserDetailAPI(newUserUrl).then((userDetail)=>{
+            this.userDetailArr.push(userDetail);
+        });
     }
 }

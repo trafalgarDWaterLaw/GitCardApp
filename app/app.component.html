@@ -1,3 +1,8 @@
+<div>
+  <input #newUserUrl (keyup.enter)="addUser(newUserUrl.value)" placeholder="github login"
+  (blur)="addUser(newUserUrl.value); newUserUrl.value='' " />
+  <button (click)="addUser(newUserUrl.value)">Add</button>
+  </div>
 <ul class="nav nav-pills">
   <li role="presentation" >Sort by:</li>
   <button class="btn btn-default" type="submit" (click)="sortByName()">Name</button>

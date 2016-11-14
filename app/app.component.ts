@@ -64,13 +64,9 @@ export class AppComponent implements OnInit{
     addUser(newUserUrl:string){
         console.log("***************************Component logging*******************");
         console.log(newUserUrl);
-        this.gitService.getSingleUserDetailAPI(newUserUrl).then((userDetail)=>{
-            let idx = this.userDetailArr.indexOf(userDetail);
-            if(idx === -1){             //To not add duplicate card
-                this.userDetailArr.push(userDetail);
-            }
-        }).catch(msg =>{
-            this.handleError("Invalid Github Login");
+        this.gitService.getSingleUserDetailAPI(newUserUrl).then((userDetailArr)=>{
+            this.userDetailArr = userDetailArr;
+            console.log(this.userDetailArr);
         });
     }
 }

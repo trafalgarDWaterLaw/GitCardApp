@@ -7,7 +7,7 @@ import 'rxjs/add/operator/toPromise'; //add on module of angular
 @Injectable()
 export class GITService {
     public userDetailArr:User[]; 
-    public singleUserDetail:User = new User();
+    public singleUserDetail:User;
     private urlHtml:string ;
     public errorMsg:any;
     private endpointUrl = 'https://api.github.com/users?since=135';
@@ -74,12 +74,14 @@ export class GITService {
     }
     
     private parseSingleUserResponse(Object:any){
+        this.singleUserDetail = new User()
         this.singleUserDetail.avatarUrl = Object.avatar_url;
         this.singleUserDetail.followers = parseInt(Object.followers);
         this.singleUserDetail.htmlUrl = Object.html_url;
         this.singleUserDetail.id = parseInt(Object.id);
         this.singleUserDetail.location = Object.location;
         this.singleUserDetail.name = Object.name;
+        this.userDetailArr.push(this.singleUserDetail);
     }
     
     private getAPIUrl(userHtmlUrl:string){
@@ -111,6 +113,6 @@ export class GITService {
                             console.log(res.status);
                             this.parseSingleUserResponse(res);
                         });
-                        return Promise.resolve(this.singleUserDetail);
+                        return Promise.resolve(this.userDetailArr);
     }
 }

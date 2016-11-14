@@ -10,14 +10,23 @@ import {GITService} from './Services/git.service';
 })
 export class AppComponent implements OnInit{ 
     public userDetailArr:User[] = [];
-    public serviceError:any;
-    constructor(private gitService:GITService /*, private addUserService:AddGITUserService*/){
+    public serviceError:any = "";
+    public errorCount:number = 0;
+    constructor(private gitService:GITService){
+    }
+    handleError(errormsg:string){
+        this.errorCount = this.errorCount +1;
+        this.serviceError = errormsg;
+        console.log('**********************Error Occured********************');
+        console.log(this.serviceError);
     }
     ngOnInit() {
             this.gitService.getUserDetail().then((userDetailArr)=>{
             this.userDetailArr = userDetailArr;
             console.log(this.userDetailArr);
-        });
+        }).catch(msg =>{
+            this.handleError("API rate limit exceeded(60 per hour from an IP), Please try running application after an hour");
+        });;
     }
     sortByFollowers(){
              this.userDetailArr.sort((n1,n2) => n2.followers - n1.followers);
@@ -60,6 +69,8 @@ export class AppComponent implements OnInit{
             if(idx === -1){             //To not add duplicate card
                 this.userDetailArr.push(userDetail);
             }
+        }).catch(msg =>{
+            this.handleError("Invalid Github Login");
         });
     }
 }

@@ -21,21 +21,6 @@ export class GITService {
         console.log(this.userDetailArr.length);
         return Promise.resolve(this.userDetailArr);
     }
-    private  handleError(error: Response | any) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.log('*******************************');
-        console.log('service Error message');
-        console.error(errMsg);
-        console.log('*******************************');
-        this.errorMsg = errMsg;
-    }
     private parseAllUserResponse(arrayOfObject:any){
         for (let i=0;i<arrayOfObject.length;i++){ 
             let dummy:AllUser = new AllUser(); 
@@ -87,7 +72,8 @@ export class GITService {
         }
         console.log(this.userDetailArr);
     }
-     private parseSingleUserResponse(Object:any){
+    
+    private parseSingleUserResponse(Object:any){
         this.singleUserDetail.avatarUrl = Object.avatar_url;
         this.singleUserDetail.followers = parseInt(Object.followers);
         this.singleUserDetail.htmlUrl = Object.html_url;
@@ -95,6 +81,7 @@ export class GITService {
         this.singleUserDetail.location = Object.location;
         this.singleUserDetail.name = Object.name;
     }
+    
     private getAPIUrl(userHtmlUrl:string){
         //Getting url logic
         let stringLength = userHtmlUrl.length;
@@ -111,6 +98,7 @@ export class GITService {
         this.urlHtml = this.urlHtml + userHtmlUrl.substr(idx, usernameLen);
         //Getting url logic ends
     }
+    
     getSingleUserDetailAPI(userHtmlUrl:string){
         this.getAPIUrl(userHtmlUrl);
         console.log(userHtmlUrl);

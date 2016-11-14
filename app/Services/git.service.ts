@@ -81,7 +81,13 @@ export class GITService {
         this.singleUserDetail.id = parseInt(Object.id);
         this.singleUserDetail.location = Object.location;
         this.singleUserDetail.name = Object.name;
-        this.userDetailArr.push(this.singleUserDetail);
+        let dummy = this.singleUserDetail;
+        let idx = this.userDetailArr.find(function(el){
+            return el.id === dummy.id;
+        });
+         if (idx === undefined) {
+            this.userDetailArr.push(this.singleUserDetail);
+         }
     }
     
     private getAPIUrl(userHtmlUrl:string){

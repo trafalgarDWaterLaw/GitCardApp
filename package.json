@@ -35,7 +35,8 @@
     "@angular/platform-browser-dynamic": "~2.0.2",
     "@angular/router": "~3.0.2",
     "@angular/upgrade": "~2.0.2",
-
+    
+    "typescript": "2.0.10",
     "angular-in-memory-web-api": "~0.1.5",
     "bootstrap": "^3.3.7",
     "systemjs": "0.19.39",
